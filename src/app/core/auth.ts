@@ -47,6 +47,7 @@ export class Auth {
   getRole(): string | null {
     console.log('Getting user role');
     console.log('User info:', this.getUser());
+    console.log("Token",this.getToken());
     return this.getUser()?.role || null;
   }
 

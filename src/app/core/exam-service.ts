@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IExam } from '../shared/models/iexam';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -12,8 +12,13 @@ export class ExamService {
 
   constructor(private http: HttpClient) {}
 
-  getAllExams(): Observable<IExam[]> {
-    return this.http.get<IExam[]>(this.apiUrl);
-  }
-  
+getAllExams(): Observable<IExam[]> {
+  const token = localStorage.getItem('jwtToken');
+
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.get<IExam[]>(this.apiUrl, { headers });
+}
 }
