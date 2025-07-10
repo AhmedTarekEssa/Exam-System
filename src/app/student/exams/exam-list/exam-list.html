@@ -1,1 +1,25 @@
-<p>exam-list works!</p>
+<h2>All Exams</h2>
+<div class="exam-grid">
+  <div *ngFor="let exam of ExamLists" class="exam-card">
+    <div class="exam-header">
+      <div>
+        <div class="exam-title">{{ exam.title }}</div>
+        <div class="exam-subject">{{ exam.description }}</div>
+      </div>
+      <div class="exam-status status-available">Available</div>
+    </div>
+    <div class="exam-details">
+      <div class="detail-item">
+        <div class="detail-value">{{ exam.durationMinutes }} min</div>
+        <div class="detail-label">Duration</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-value">{{ exam.questions.length }}</div>
+        <div class="detail-label">Questions</div>
+      </div>
+    </div>
+    <div class="exam-actions">
+      <button class="btn btn-primary">Start Exam</button>
+    </div>
+  </div>
+</div>

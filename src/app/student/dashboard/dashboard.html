@@ -1,1 +1,59 @@
-<p>dashboard works!</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">📚</div>
+                    <div>
+                        <h1>EduDash</h1>
+                        <p>Student Portal</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a routerLink="/student" routerLinkActive="active" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+                <a routerLink="/student/exams" routerLinkActive="active" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span>Exams</span>
+                </a>
+                <a routerLink="/student/results" routerLinkActive="active" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span>Results</span>
+                </a>
+            </nav>
+
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2 id="page-title">Dashboard</h2>
+                <p id="page-subtitle">Welcome back, Sarah! Here's your academic overview</p>
+            </div>
+
+            <div class="content">
+                <router-outlet></router-outlet>
+            </div> <!-- End of .content -->
+        </div> <!-- End of .main-content -->
+    </div>
+
+    <!-- JavaScript to switch sections -->
+</body>
+
+</html>
