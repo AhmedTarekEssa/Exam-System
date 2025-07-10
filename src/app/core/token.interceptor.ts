@@ -1,28 +1,22 @@
-import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { Auth } from './auth';
-// token.interceptor.ts
-import {  Injector } from '@angular/core';
 
-@Injectable()
-export class TokenInterceptor implements HttpInterceptor {
-  constructor(private injector: Injector) {}
+export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
+  const auth = inject(Auth); // Use inject() instead of constructor
+  const token = auth.getToken();
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Lazily get Auth service to break circular dependency
-    const auth = this.injector.get(Auth);
-    const token = auth.getToken();
+  console.log('TokenInterceptor: Intercepting request', req.url);
+  console.log('TokenInterceptor: Current token', token);
 
-    if (token) {
-      const cloned = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      return next.handle(cloned);
-    }
-
-    return next.handle(req);
+  if (token) {
+    const clonedReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return next(clonedReq); // Note: `.handle()` is no longer needed
   }
-}
+
+  return next(req); // Just pass the request if no token
+};
