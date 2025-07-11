@@ -14,7 +14,7 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadComponent: () => import('./../student/dashboard/dashboard-content/dashboard-content').then(m => m.DashboardContent),
+        loadComponent: () => import('./../admin/dashboard/dasboard-content/dasboard-content').then(m => m.DasboardContent),
         title: 'Dashboard'
       },
       {
