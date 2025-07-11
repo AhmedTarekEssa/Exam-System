@@ -1,15 +1,31 @@
 import { Routes } from '@angular/router';
 import { Dashboard } from './dashboard/dashboard';
-import { ExamList } from './exams/exam-list/exam-list';
-import { TakeExam } from './exams/take-exam/take-exam';
-import { SubmitExam } from './exams/submit-exam/submit-exam';
-import { ViewResults } from './results/view-results/view-results';
 
 export const routes: Routes = [
-{ path: '', component: Dashboard },
-{ path: 'exams', component: ExamList },
-{ path: 'exams/take/:id', component: TakeExam },
-{ path: 'exams/submit', component: SubmitExam },
-{ path: 'results', component: ViewResults },
+  {
+    path: '',
+    component: Dashboard,
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./../student/dashboard/dashboard-content/dashboard-content').then(m => m.DashboardContent),
+        title: 'Dashboard'
+      },
+      {
+        path: 'exams',
+        loadComponent: () => import('./exams/exam-list/exam-list').then(m => m.ExamList),
+        title: 'Exams'
+      },
+      {
+        path: 'results',
+        loadComponent: () => import('./results/view-results/view-results').then(m => m.ViewResults),
+        title: 'Results'
+      }
+    ]
+  }
 ];
-
