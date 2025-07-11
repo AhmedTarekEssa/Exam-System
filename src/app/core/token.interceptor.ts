@@ -6,8 +6,6 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(Auth); // Use inject() instead of constructor
   const token = auth.getToken();
 
-  console.log('TokenInterceptor: Intercepting request', req.url);
-  console.log('TokenInterceptor: Current token', token);
 
   if (token) {
     const clonedReq = req.clone({
