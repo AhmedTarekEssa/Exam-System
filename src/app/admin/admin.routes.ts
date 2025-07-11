@@ -1,11 +1,32 @@
-// src/app/admin/admin.routes.ts
 import { Routes } from '@angular/router';
 import { Dashboard } from './dashboard/dashboard';
-import { ViewStudentResults } from './results/view-student-results/view-student-results';
+
 
 export const routes: Routes = [
-  { path: '', component: Dashboard },
-  { path: 'exams', loadChildren: () => import('./manage-exams/exams.routes').then(m => m.routes) },
-  { path: 'questions', loadChildren: () => import('./manage-questions/questions.routes').then(m => m.routes) },
-  { path: 'results', component: ViewStudentResults }
+  {
+    path: '',
+    component: Dashboard,
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./../student/dashboard/dashboard-content/dashboard-content').then(m => m.DashboardContent),
+        title: 'Dashboard'
+      },
+      {
+        path: 'exams',
+        loadChildren: () => import('./manage-exams/exams.routes').then(m => m.routes),
+        title: 'Exams'
+      },
+      {
+        path: 'results',
+        loadComponent: () => import('./results/view-student-results/view-student-results').then(m => m.ViewStudentResults),
+        title: 'Results'
+      }
+    ]
+  }
 ];
