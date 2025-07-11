@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './dasboard-content.css'
 })
 export class DasboardContent {
-
+  
 }

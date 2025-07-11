@@ -1,4 +1,54 @@
-<p>dashboard works!</p>
-<p>Welcome to the admin dashboard.</p>
+<div class="dashboard d-flex min-vh-100 bg-light">
+  <!-- Sidebar -->
+  <div class="sidebar d-flex flex-column flex-shrink-0 p-3 bg-dark text-white" style="width: 280px;">
+    <div class="sidebar-header mb-4 pb-3 border-bottom">
+      <div class="logo d-flex align-items-center gap-3">
+        <div class="logo-icon fs-3">👨‍💼</div>
+        <div>
+          <h1 class="h5 mb-1">Admin Portal</h1>
+          <p class="  mb-0">Management System</p>
+        </div>
+      </div>
+    </div>
 
-<router-outlet></router-outlet>
+    <div class="admin-info d-flex align-items-center p-3 rounded mb-4 bg-secondary bg-opacity-10">
+      <div class="admin-avatar d-flex align-items-center justify-content-center me-3 bg-primary rounded-circle" style="width: 40px; height: 40px; font-weight: bold;">A</div>
+      <div>
+        <div class="admin-name fw-bold">Administrator</div>
+        <div class="admin-role ">Admin</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav d-flex flex-column gap-1">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded">
+        <span class="nav-icon me-3">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/admin/exams" routerLinkActive="active" class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded">
+        <span class="nav-icon me-3">📝</span>
+        <span>Manage Exams</span>
+      </a>
+      <a routerLink="/admin/questions" routerLinkActive="active" class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded">
+        <span class="nav-icon me-3">❓</span>
+        <span>Manage Questions</span>
+      </a>
+      <a routerLink="/admin/results" routerLinkActive="active" class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded">
+        <span class="nav-icon me-3">📈</span>
+        <span>View Results</span>
+      </a>
+    </nav>
+    <br>
+    <hr class="my-3 text-white opacity-50">
+      <a (click)="logout()" class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded">
+        <span class="nav-icon me-3">🚪</span>
+        <button class="btn btn-info">Logout</button>
+      </a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content flex-grow-1 ">
+    <div class="content bg-white rounded-3 p-4 shadow-sm min-vh-100">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
