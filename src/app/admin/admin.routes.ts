@@ -23,6 +23,11 @@ export const routes: Routes = [
         title: 'Exams'
       },
       {
+        path: 'questions',
+        loadChildren: () => import('./manage-questions/questions.routes').then(m => m.routes),
+        title: 'Questions'
+      },
+      {
         path: 'results',
         loadComponent: () => import('./results/view-student-results/view-student-results').then(m => m.ViewStudentResults),
         title: 'Results'
