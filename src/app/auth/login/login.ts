@@ -46,4 +46,8 @@ export class Login implements OnInit {
       error: () => this.error = 'Invalid credentials'
     });
   }
+  register() {
+    console.log('Redirecting to registration page');
+    this.router.navigate(['/auth/register']);
+  }
 }

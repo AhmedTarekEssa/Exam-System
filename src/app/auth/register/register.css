@@ -1,0 +1,66 @@
+.card {
+  border-radius: 12px;
+}
+
+.btn-primary {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.btn-outline-dark {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-dark:hover {
+  transform: translateY(-1px);
+}
+
+.input-group-text {
+  border-radius: 8px 0 0 8px;
+}
+
+.form-control {
+  border-radius: 0 8px 8px 0;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.alert {
+  border-radius: 8px;
+  border: none;
+}
+
+.alert-success {
+  background-color: #d1e7dd;
+  color: #0a3622;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #58151c;
+}
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: 2rem 1.5rem;
+  }
+
+  .d-flex.gap-2 {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
+}
