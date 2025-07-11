@@ -1,15 +1,93 @@
-<h1>Login</h1>
-<form [formGroup]="loginForm" (ngSubmit)="login()">
-  <input type="email" formControlName="email" placeholder="Email" />
-  <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-    Valid email required
-  </div>
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="row w-100">
+    <div class="col-12 col-md-6 col-lg-4 mx-auto">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            <h3 class="fw-bold text-primary mb-1">Welcome Back</h3>
+            <p class="text-muted small">Please sign in to your account</p>
+          </div>
 
-  <input type="password" formControlName="password" placeholder="Password" />
-  <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-    Password is required
-  </div>
+          <form [formGroup]="loginForm" (ngSubmit)="login()">
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label for="email" class="form-label text-secondary">Email Address</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-envelope text-muted"></i>
+                </span>
+                <input
+                  type="email"
+                  id="email"
+                  formControlName="email"
+                  placeholder="Enter your email"
+                  class="form-control border-start-0 ps-0"
+                  [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+                  [class.is-valid]="loginForm.get('email')?.valid && loginForm.get('email')?.touched"
+                />
+              </div>
+              <div class="invalid-feedback d-block" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                <small><i class="fas fa-exclamation-circle me-1"></i>Valid email required</small>
+              </div>
+            </div>
 
-  <button type="submit" [disabled]="loginForm.invalid">Login</button>
-  <div *ngIf="error">{{ error }}</div>
-</form>
+            <!-- Password Field -->
+            <div class="mb-3">
+              <label for="password" class="form-label text-secondary">Password</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-lock text-muted"></i>
+                </span>
+                <input
+                  type="password"
+                  id="password"
+                  formControlName="password"
+                  placeholder="Enter your password"
+                  class="form-control border-start-0 ps-0"
+                  [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                  [class.is-valid]="loginForm.get('password')?.valid && loginForm.get('password')?.touched"
+                />
+              </div>
+              <div class="invalid-feedback d-block" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                <small><i class="fas fa-exclamation-circle me-1"></i>Password is required</small>
+              </div>
+            </div>
+
+
+
+            <!-- Error Message -->
+            <div class="alert alert-danger d-flex align-items-center mb-3" *ngIf="error" role="alert">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              <div>{{ error }}</div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid">
+              <button
+                type="submit"
+                [disabled]="loginForm.invalid"
+                class="btn btn-primary btn-lg py-2 fw-semibold"
+                [class.disabled]="loginForm.invalid"
+              >
+                <span >
+                  <i class="fas fa-sign-in-alt me-2"></i>login In
+                </span>
+
+              </button>
+            </div>
+          </form>
+
+          <!-- Divider -->
+            <div class="text-center my-4">
+            <span class="text-muted small">
+              Don't have an account?
+            </span>
+            <a (click)="register()" class="btn btn-link text-primary fw-semibold px-0 ms-1">
+              Sign up
+            </a>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
