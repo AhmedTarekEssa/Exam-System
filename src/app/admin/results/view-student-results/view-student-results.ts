@@ -37,7 +37,6 @@ export class ViewStudentResults implements OnInit {
     next: (results) => {
       this.results = results.map(result => ({
         ...result,
-        // Calculate percentage here
         percentage: this.calculatePercentage(result.score, result.totalPoints)
       }));
       this.isLoading = false;
@@ -50,13 +49,11 @@ export class ViewStudentResults implements OnInit {
   });
 }
 
-// Add this method to your component
 private calculatePercentage(score: number, totalPoints: number): number {
-  if (totalPoints <= 0) return 0; // Prevent division by zero
+  if (totalPoints <= 0) return 0;
   return Math.round((score / totalPoints) * 100);
 }
 
-  // Optional: If you need to fetch student names
   private loadStudentNames(results: IExamResult[]): void {
     const requests = results.map(result =>
       this.resultService.getStudentName(result.userId)
