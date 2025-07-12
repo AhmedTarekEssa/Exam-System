@@ -1,1 +1,107 @@
-<p>take-exam works!</p>
+<div class="exam-container">
+  <!-- Timer Section -->
+  <div class="timer-section">
+    <div class="timer-display">
+      <div class="timer-icon">⏱️</div>
+      <div class="timer-text">
+        <span class="timer-label">Time Remaining:</span>
+        <span class="timer-value">
+          {{ formatTime(timeRemaining) }}
+        </span>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="getTimeProgress()"></div>
+    </div>
+  </div>
+
+  <!-- Exam Header -->
+  <div class="exam-header">
+    <h1 class="exam-title">{{ exam?.title || 'Loading Exam...' }}</h1>
+    <div class="exam-info" *ngIf="exam; else loading">
+      <span class="question-counter">Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}</span>
+      <span class="exam-duration">Total Time: {{ formatTime(totalTime) }}</span>
+    </div>
+    <ng-template #loading>
+      <p>Loading exam data...</p>
+    </ng-template>
+  </div>
+
+  <!-- Question Section -->
+  <div class="question-section" *ngIf="currentQuestion">
+    <div class="question-header">
+      <h2 class="question-title">{{ currentQuestion.text }}</h2>
+      <span class="question-type">{{ currentQuestion.type }}</span>
+    </div>
+    <div class="options-container">
+      <div class="option-item" *ngFor="let option of currentQuestion.options">
+        <label class="option-label">
+          <input
+            type="radio"
+            name="option"
+            [value]="option.id"
+            [(ngModel)]="currentQuestion.selectedOptionId"
+            (ngModelChange)="onAnswerChange($event)"
+            class="option-radio" />
+          <span class="option-text">{{ option.text || 'No text available' }}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Section -->
+  <div class="navigation-section">
+    <button 
+      class="nav-button prev-button" 
+      [disabled]="currentQuestionIndex === 0"
+      (click)="previousQuestion()">
+      ← Previous
+    </button>
+    
+    <div class="question-indicators">
+      <span 
+        *ngFor="let question of questions; let i = index"
+        class="question-indicator"
+        [class.current]="i === currentQuestionIndex"
+        [class.answered]="hasAnswered(question)"
+        (click)="goToQuestion(i)">
+        {{ i + 1 }}
+      </span>
+    </div>
+    
+    <button 
+      class="nav-button next-button" 
+      [disabled]="currentQuestionIndex === questions.length - 1"
+      (click)="nextQuestion()"
+      *ngIf="currentQuestionIndex < questions.length - 1">
+      Next →
+    </button>
+    
+    <button 
+      class="submit-button" 
+      (click)="submitExam()"
+      *ngIf="currentQuestionIndex === questions.length - 1">
+      Submit Exam
+    </button>
+  </div>
+
+  <!-- Exam Summary
+  <div class="exam-summary" *ngIf="examFinished">
+    <h2>Exam Completed!</h2>
+    <p>Your answers have been recorded.</p>
+    <div class="summary-stats">
+      <div class="stat">
+        <span class="stat-label">Questions Answered:</span>
+        <span class="stat-value">{{ getAnsweredCount() }} / {{ questions.length }}</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Time Used:</span>
+        <span class="stat-value">{{ formatTime(totalTime - timeRemaining) }}</span>
+      </div>
+      <div class="stat" *ngIf="score != null && totalPoints != null">
+        <span class="stat-label">Score:</span>
+        <span class="stat-value">{{ score }} / {{ totalPoints }}</span>
+      </div>
+    </div>
+  </div> -->
+</div>
