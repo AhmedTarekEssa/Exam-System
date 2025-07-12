@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { IExam } from '../../../shared/models/iexam';
-import { ExamService } from '../../../core/exam-service';
+
 import { CommonModule } from '@angular/common';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { IStudentResponse } from '../../../shared/models/istudent-response';
+import { ExamService } from '../../../core/ExamService/exam-service';
 
 @Component({
   selector: 'app-exam-list',
@@ -16,7 +18,7 @@ export class ExamList implements OnInit {
 
   ExamLists: IExam[] = [];
 
-  constructor(private examSer: ExamService, private router: Router) {
+  constructor(private examSer: ExamService, private router: Router,private route: ActivatedRoute) {
     // Re-fetch data on route re-entry
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -35,4 +37,23 @@ export class ExamList implements OnInit {
       error: (err) => console.error('Failed to load exams', err)
     });
   }
+
+startExam(examId: number): void {
+  this.examSer.startExam(examId).subscribe({
+    next: (res) => {
+      console.log(examId);
+      console.log('Started exam with resultId:', res.resultId);
+this.router.navigate(['/student/exams/take', res.resultId]);
+// ✅ Just this
+    },
+    error: (err: any) => {
+      console.error('Failed to start exam', err);
+      alert('Could not start the exam. Please try again.');
+    }
+  });
+}
+
+
+
+
 }

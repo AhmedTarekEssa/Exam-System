@@ -17,7 +17,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'results', pathMatch: 'full' },
       { path: 'exams', component: ExamList },
-      { path: 'exams/take/:id', component: TakeExam },
+      { path: 'exams/take/:resultId', component: TakeExam },
       { path: 'exams/submit', component: SubmitExam },
       { path: 'results', component: ViewResults },
     ]

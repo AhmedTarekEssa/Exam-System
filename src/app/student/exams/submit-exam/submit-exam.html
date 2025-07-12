@@ -1,1 +1,21 @@
-<p>submit-exam works!</p>
+<div class="results-container">
+  <h1 class="results-title">Your Exam Results</h1>
+  
+  <div class="results-box">
+    <div class="result-item">
+      <span class="label">Score:</span>
+      <span class="value">{{ score }} / {{ total }}</span>
+    </div>
+    <div class="result-item">
+      <span class="label">Percentage:</span>
+      <span class="value">{{ (score / total * 100) | number: '1.0-2' }}%</span>
+    </div>
+    <div class="result-item">
+      <span class="label">Status:</span>
+      <span class="value pass" *ngIf="score >= total / 2">Pass</span>
+      <span class="value fail" *ngIf="score < total / 2">Fail</span>
+    </div>
+  </div>
+
+  <button class="back-button" (click)="goToDashboard()">← Back to Dashboard</button>
+</div>
