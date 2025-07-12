@@ -4,6 +4,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environments';
 
 export interface IExamResult {
+duration: any;
+  user: any;
+status: any;
   id: number;
   score: number;
   totalPoints: number;
@@ -23,26 +26,14 @@ export class ResultService {
   constructor(private http: HttpClient) {}
 
   getResultsByExam(examId: number): Observable<IExamResult[]> {
-    const token = localStorage.getItem('jwtToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
     return this.http.get<IExamResult[]>(
-      `${this.apiUrl}/Results/exam/${examId}`,
-      { headers }
+      `${this.apiUrl}/Results/exam/${examId}`
     );
   }
 
   getStudentName(userId: string): Observable<{name: string}> {
-    const token = localStorage.getItem('jwtToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
     return this.http.get<{name: string}>(
-      `${this.apiUrl}/Users/${userId}/name`,
-      { headers }
+      `${this.apiUrl}/Users/${userId}/name`
     );
   }
 }

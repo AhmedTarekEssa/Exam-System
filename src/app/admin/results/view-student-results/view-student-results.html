@@ -1,78 +1,112 @@
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Exam Results (ID: {{ examId }})</h2>
-    <button
-      [routerLink]="['/admin/exams', examId]"
-      class="btn btn-outline-secondary"
+  <!-- Exam Selection Dropdown -->
+  <div class="mb-4">
+    <label for="examSelect" class="form-label">Select Exam</label>
+    <select
+      id="examSelect"
+      class="form-select"
+      (change)="onExamChange($any($event.target).value)"
+      [value]="selectedExamId ?? ''"
     >
-      Back to Exam
-    </button>
+      <option value="">-- Select an Exam --</option>
+      @for (exam of exams; track exam.id) {
+        <option [value]="exam.id">{{ exam.title }} (ID: {{ exam.id }})</option>
+      }
+    </select>
   </div>
 
   @if (isLoading) {
-  <div class="text-center py-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading data...</p>
     </div>
-    <p class="mt-2">Loading results...</p>
-  </div>
   } @else if (error) {
-  <div class="alert alert-danger">
-    {{ error }}
-    <button (click)="loadResults()" class="btn btn-sm btn-outline-danger ms-2">
-      Retry
-    </button>
-  </div>
-  } @else { @if (results.length === 0) {
-  <div class="alert alert-info">No results found for this exam.</div>
+    <div class="alert alert-danger d-flex justify-content-between align-items-center">
+      <span>{{ error }}</span>
+      <button (click)="loadInitialData()" class="btn btn-sm btn-outline-danger">Retry</button>
+    </div>
   } @else {
-  <div class="table-responsive">
-    <table class="table table-striped table-hover">
-      <thead class="table-dark">
-        <tr>
-          <th>Student ID</th>
-          <th>Score</th>
-          <th>Percentage</th>
-          <th>Duration</th>
-          <th>Completed At</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (result of results; track result.id) {
-        <tr>
-          <td>{{ result.userId | shortenId }}</td>
-          <td>{{ result.score }}/{{ result.totalPoints }}</td>
-          <td>
-            <span
-              class="badge"
-              [ngClass]="{
-                'bg-success': (result.score / result.totalPoints) * 100 >= 70,
-                'bg-warning':
-                  (result.score / result.totalPoints) * 100 >= 50 &&
-                  (result.score / result.totalPoints) * 100 < 70,
-                'bg-danger': (result.score / result.totalPoints) * 100 < 50
-              }"
-            >
-              {{
-                (result.score / result.totalPoints) * 100 | number : "1.0-0"
-              }}%
-            </span>
-          </td>
-          <td>{{ getDuration(result.startTime, result.endTime) }}</td>
-          <td>{{ result.endTime | date : "medium" }}</td>
-          <td>
-            <button
-              [routerLink]="['/admin/results', examId, result.id]"
-              class="btn btn-sm btn-outline-primary"
-            >
-              Details
-            </button>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  } }
+    @if (selectedExamId && results.length === 0) {
+      <div class="alert alert-info">No results found for this exam.</div>
+    } @else if (selectedExamId) {
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Results for: {{ selectedExam?.title || 'Selected Exam' }}</h2>
+        <div class="text-muted">Total Students: {{ results.length }}</div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th>Score</th>
+              <th>Percentage</th>
+              <th>Duration</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (result of results; track result.userId) {
+              <tr>
+                <td>{{ result.userId | shortenId }}</td>
+                <td>{{ result.studentName || 'N/A' }}</td>
+                <td>{{ result.score }} / {{ result.totalPoints }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'bg-success': result.percentage! >= 70,
+                    'bg-warning': result.percentage! >= 50 && result.percentage! < 70,
+                    'bg-danger': result.percentage! < 50
+                  }">
+                    {{ result.percentage ?? 0 }}%
+                  </span>
+                </td>
+                <td>{{ result.duration ?? '--' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'bg-success': result.status === 'completed',
+                    'bg-secondary': result.status === 'incomplete',
+                    'bg-danger': result.status === 'failed'
+                  }">
+                    {{ result.status | titlecase }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-4 row">
+        <div class="col-md-4">
+          <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Passed</h5>
+              <p class="card-text fs-4">{{ countPassed() }} students</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-dark bg-warning mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Average</h5>
+              <p class="card-text fs-4">{{ countAverage() }} students</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Failed</h5>
+              <p class="card-text fs-4">{{ countFailed() }} students</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="alert alert-info">Please select an exam to view results.</div>
+    }
+  }
 </div>
