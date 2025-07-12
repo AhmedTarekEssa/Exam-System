@@ -1,1 +1,90 @@
-<p>add-edit-question works!</p>
+<div class="container mt-4">
+  <h2>{{ isEditMode ? 'Edit Question' : 'Add New Question' }}</h2>
+  
+  @if (isLoading && !questionForm.dirty) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading question details...</p>
+    </div>
+  } @else {
+    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="text" class="form-label">Question Text</label>
+        <textarea class="form-control" id="text" rows="3" formControlName="text"></textarea>
+        @if (questionForm.get('text')?.invalid && questionForm.get('text')?.touched) {
+          <div class="text-danger">
+            <small *ngIf="questionForm.get('text')?.errors?.['required']">Question text is required</small>
+            <small *ngIf="questionForm.get('text')?.errors?.['minlength']">Minimum 5 characters required</small>
+          </div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="type" class="form-label">Question Type</label>
+        <select class="form-select" id="type" formControlName="type">
+          @for (type of questionTypes; track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="position" class="form-label">Position</label>
+        <input type="number" class="form-control" id="position" formControlName="position">
+        @if (questionForm.get('position')?.invalid && questionForm.get('position')?.touched) {
+          <div class="text-danger">
+            <small *ngIf="questionForm.get('position')?.errors?.['required']">Position is required</small>
+            <small *ngIf="questionForm.get('position')?.errors?.['min']">Must be 0 or greater</small>
+          </div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <h5>Options</h5>
+        <div formArrayName="options">
+          @for (option of options.controls; track $index; let i = $index) {
+            <div class="card mb-2" [formGroupName]="i">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="flex-grow-1 me-3">
+                    <input type="text" class="form-control mb-2" formControlName="text" placeholder="Option text">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" formControlName="isCorrect" id="correct-{{i}}">
+                      <label class="form-check-label" for="correct-{{i}}">Correct Answer</label>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="removeOption(i)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="addOption()">
+          <i class="bi bi-plus"></i> Add Option
+        </button>
+      </div>
+
+      @if (error) {
+        <div class="alert alert-danger mb-3">{{ error }}</div>
+      }
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" 
+                (click)="router.navigate(['/admin/exams', examId, 'questions'])">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="questionForm.invalid || isLoading">
+          @if (isLoading) {
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          } @else {
+            {{ isEditMode ? 'Update' : 'Save' }} Question
+          }
+        </button>
+      </div>
+    </form>
+  }
+</div>

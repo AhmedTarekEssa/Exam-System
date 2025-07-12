@@ -1,0 +1,13 @@
+.form-control.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+.text-danger small {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.65;
+}

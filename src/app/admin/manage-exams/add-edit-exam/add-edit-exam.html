@@ -1,1 +1,74 @@
-<p>add-edit-exam works!</p>
+<div class="container mt-4">
+  <h2>{{ isEditMode ? 'Edit Exam' : 'Add New Exam' }}</h2>
+
+  @if (isLoading && !examForm.dirty) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading exam details...</p>
+    </div>
+  } @else {
+    <form [formGroup]="examForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" formControlName="title">
+        @if (title?.invalid && (title?.dirty || title?.touched)) {
+          <div class="text-danger">
+            @if (title?.errors?.['required']) {
+              <small>Title is required</small>
+            }
+            @if (title?.errors?.['minlength']) {
+              <small>Minimum 3 characters required</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" rows="3" formControlName="description"></textarea>
+        @if (description?.invalid && (description?.dirty || description?.touched)) {
+          <div class="text-danger">
+            @if (description?.errors?.['required']) {
+              <small>Description is required</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="duration" class="form-label">Duration (minutes)</label>
+        <input type="number" class="form-control" id="duration" formControlName="durationMinutes">
+        @if (durationMinutes?.invalid && (durationMinutes?.dirty || durationMinutes?.touched)) {
+          <div class="text-danger">
+            @if (durationMinutes?.errors?.['required']) {
+              <small>Duration is required</small>
+            }
+            @if (durationMinutes?.errors?.['min']) {
+              <small>Must be at least 1 minute</small>
+            }
+          </div>
+        }
+      </div>
+
+      @if (error) {
+        <div class="alert alert-danger mb-3">{{ error }}</div>
+      }
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" (click)="router.navigate(['/admin/exams'])">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="examForm.invalid || isLoading">
+          @if (isLoading) {
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading...</span>
+          } @else {
+            {{ isEditMode ? 'Update' : 'Save' }} Exam
+          }
+        </button>
+      </div>
+    </form>
+  }
+</div>
