@@ -73,10 +73,10 @@ createExam(examData: { title: string, description: string, durationMinutes: numb
   }
 
   updateExam(
-  id: number, 
-  examData: { 
-    title: string, 
-    description: string, 
+  id: number,
+  examData: {
+    title: string,
+    description: string,
     durationMinutes: number,
     questions?: IQuestion[] // Add this line
   }
@@ -90,7 +90,7 @@ createExam(examData: { title: string, description: string, durationMinutes: numb
   return this.http.put<IExam>(`${this.apiUrl}/Exams/${id}`, examData, { headers });
 }
 
-  
+
 getExamById(id: number): Observable<IExam> {
   const token = localStorage.getItem('jwtToken');
   const headers = new HttpHeaders({

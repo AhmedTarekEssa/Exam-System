@@ -67,7 +67,7 @@ export class ExamList implements OnInit {
     cancelButtonText: 'Cancel',
     reverseButtons: true,
     focusCancel: true
-  }).then((result) => {
+  }).then((result : any) => {
     if (result.isConfirmed) {
       this.deletingIds.add(id);
       this.cdr.detectChanges();

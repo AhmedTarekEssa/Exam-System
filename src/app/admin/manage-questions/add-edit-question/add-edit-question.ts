@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { QuestionService } from '../../../core/admin-serveces/question-service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,14 +20,15 @@ export class AddEditQuestion implements OnInit {
   error: string | null = null;
   examId!: number;
   questionId?: number;
-  questionTypes = ['MultipleChoice', 'TrueFalse', 'ShortAnswer']; // Updated to match API enum values
+  questionTypes = ['MultipleChoice', 'TrueFalse', 'ShortAnswer'];
 
   constructor(
     private fb: FormBuilder,
     private questionService: QuestionService,
     private examService: ExamService,
     private route: ActivatedRoute,
-    public router: Router
+    public router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.questionForm = this.fb.group({
       text: ['', [Validators.required, Validators.minLength(5)]],
@@ -40,13 +41,13 @@ export class AddEditQuestion implements OnInit {
   ngOnInit(): void {
     this.examId = +this.route.snapshot.params['examId'];
     const questionIdParam = this.route.snapshot.params['questionId'];
-    
+
     if (questionIdParam) {
       this.isEditMode = true;
       this.questionId = +questionIdParam;
       this.loadQuestion();
     } else {
-      this.addOption(); // Add one default option for new questions
+      this.addOption();
     }
   }
 
@@ -63,16 +64,21 @@ export class AddEditQuestion implements OnInit {
 
   addOption(): void {
     this.options.push(this.createOption());
+    this.cdr.markForCheck(); // Mark for check instead of detectChanges
   }
 
   removeOption(index: number): void {
     this.options.removeAt(index);
+    this.cdr.markForCheck(); // Mark for check instead of detectChanges
   }
 
   loadQuestion(): void {
     if (!this.questionId) return;
-    
+
     this.isLoading = true;
+    this.error = null;
+    this.cdr.markForCheck(); // Update view for loading state
+
     this.questionService.getQuestionById(this.examId, this.questionId).subscribe({
       next: (question) => {
         this.questionForm.patchValue({
@@ -91,68 +97,89 @@ export class AddEditQuestion implements OnInit {
           this.options.push(this.createOption(option));
         });
 
+        this.isEditMode = true;
         this.isLoading = false;
+        this.cdr.markForCheck(); // Update view after loading
       },
       error: (err) => {
+        console.error('Failed to load question:', err);
         this.error = 'Failed to load question. Please try again later.';
         this.isLoading = false;
+        this.cdr.markForCheck(); // Update view on error
       }
     });
   }
 
   onSubmit(): void {
-  if (this.questionForm.invalid) return;
+    if (this.questionForm.invalid) {
+      this.markFormGroupTouched(this.questionForm);
+      this.cdr.markForCheck();
+      return;
+    }
 
-  this.isLoading = true;
-  this.error = null;
+    this.isLoading = true;
+    this.error = null;
+    this.cdr.markForCheck(); // Update view for loading state
 
-  const questionData = {
-    text: this.questionForm.value.text,
-    type: this.questionForm.value.type,
-    position: this.questionForm.value.position,
-    options: this.questionForm.value.options
-  };
+    const questionData = {
+      text: this.questionForm.value.text,
+      type: this.questionForm.value.type,
+      position: this.questionForm.value.position,
+      options: this.questionForm.value.options
+    };
 
-  if (this.isEditMode && this.questionId) {
-    this.examService.getExamById(this.examId).subscribe({
-      next: (exam) => {
-        const updatedQuestions = exam.questions?.map(q => 
-          q.id === this.questionId ? { ...q, ...questionData } : q
-        ) || [];
-        
-        // Create the update payload with all required fields
-        const updatePayload = {
-          title: exam.title,
-          description: exam.description,
-          durationMinutes: exam.durationMinutes,
-          questions: updatedQuestions
-        };
+    if (this.isEditMode && this.questionId) {
+      this.examService.getExamById(this.examId).subscribe({
+        next: (exam) => {
+          const updatedQuestions = exam.questions?.map(q =>
+            q.id === this.questionId ? { ...q, ...questionData } : q
+          ) || [];
 
-        this.examService.updateExam(this.examId, updatePayload).subscribe({
-          next: () => {
-            this.router.navigate(['/admin/exams', this.examId, 'questions']);
-          },
-          error: (err) => {
-            this.error = 'Failed to update question. Please try again.';
-            this.isLoading = false;
-          }
-        });
-      },
-      error: (err) => {
-        this.error = 'Failed to load exam data. Please try again.';
-        this.isLoading = false;
-      }
-    });
-  } else {
-    this.questionService.createQuestion(this.examId, questionData).subscribe({
-      next: () => {
-        this.router.navigate(['/admin/exams', this.examId, 'questions']);
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Failed to create question. Please try again.';
-        this.isLoading = false;
+          const updatePayload = {
+            title: exam.title,
+            description: exam.description,
+            durationMinutes: exam.durationMinutes,
+            questions: updatedQuestions
+          };
+
+          this.examService.updateExam(this.examId, updatePayload).subscribe({
+            next: () => {
+              this.router.navigate(['/admin/questions']);
+            },
+            error: (err) => {
+              this.error = 'Failed to update question. Please try again.';
+              this.isLoading = false;
+              this.cdr.markForCheck();
+            }
+          });
+        },
+        error: (err) => {
+          this.error = 'Failed to load exam data. Please try again.';
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        }
+      });
+    } else {
+      this.questionService.createQuestion(this.examId, questionData).subscribe({
+        next: () => {
+          this.router.navigate(['/admin/questions']);
+        },
+        error: (err) => {
+          this.error = err.error?.message || 'Failed to create question. Please try again.';
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        }
+      });
+    }
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup | FormArray) {
+    Object.values(formGroup.controls).forEach(control => {
+      if (control instanceof FormControl) {
+        control.markAsTouched();
+      } else if (control instanceof FormGroup || control instanceof FormArray) {
+        this.markFormGroupTouched(control);
       }
     });
   }
-}
 }

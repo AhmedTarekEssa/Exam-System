@@ -30,7 +30,7 @@ export class QuestionList implements OnInit {
 
   ngOnInit(): void {
     this.loadInitialData();
-    
+
     // Watch for route changes
     this.route.params.subscribe(params => {
       this.selectedExamId = params['examId'] ? +params['examId'] : null;
@@ -81,11 +81,17 @@ export class QuestionList implements OnInit {
   onExamSelect(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const examId = select.value ? +select.value : null;
-    
+    this.selectedExamId = examId;
+    this.loadSelectedExamData();
+    // Navigate to the question list for the selected exa
+
     if (examId) {
-      this.router.navigate(['/admin/exams', examId, 'questions']);
+      console.log('Navigating to exam:', examId);
+      this.selectedExamId = examId;
+      // this.router.navigate(['/admin/exams', examId, 'questions']);
     } else {
-      this.router.navigate(['/admin/exams/questions']);
+      console.log('No exam selected, navigating to question list');
+      // this.router.navigate(['/admin/exams/questions']);
     }
   }
 }

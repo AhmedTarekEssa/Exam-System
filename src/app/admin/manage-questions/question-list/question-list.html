@@ -2,9 +2,9 @@
   <!-- Exam Selection Dropdown -->
   <div class="mb-4">
     <label for="examSelect" class="form-label">Select Exam</label>
-    <select 
-      id="examSelect" 
-      class="form-select" 
+    <select
+      id="examSelect"
+      class="form-select"
       (change)="onExamSelect($event)"
       [value]="selectedExamId ?? ''"
     >
@@ -35,8 +35,8 @@
     @if (selectedExamId) {
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Questions for: {{ selectedExam?.title || 'Selected Exam' }}</h2>
-        <button 
-          [routerLink]="['/admin/exams', selectedExamId, 'questions', 'add']"
+        <button
+          [routerLink]="['/admin/questions/add-question', selectedExamId]"
           class="btn btn-primary"
         >
           <i class="bi bi-plus-lg"></i> Add New Question
@@ -72,8 +72,8 @@
                   </td>
                   <td>
                     <div class="d-flex gap-2">
-                      <button 
-                        [routerLink]="['/admin/exams', selectedExamId, 'questions', 'edit', question.id]"
+                      <button
+                        [routerLink]="['/admin/questions/edit-question/exams', selectedExamId, question.id]"
                         class="btn btn-sm btn-outline-primary"
                       >
                         <i class="bi bi-pencil-square"></i> Edit
