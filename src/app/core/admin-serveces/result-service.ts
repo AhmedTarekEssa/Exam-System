@@ -34,7 +34,6 @@ export class ResultService {
     );
   }
 
-  // Add this if you need to get student details separately
   getStudentName(userId: string): Observable<{name: string}> {
     const token = localStorage.getItem('jwtToken');
     const headers = new HttpHeaders({
