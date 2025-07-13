@@ -1,0 +1,97 @@
+.description-text {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bg-gradient {
+  background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary-dark, #0056b3) 100%) !important;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card-header {
+  border-bottom: none;
+}
+
+.card-footer {
+  border-top: 1px solid rgba(0,0,0,.125);
+}
+
+.btn {
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.badge {
+  border-radius: 6px;
+}
+
+.table th {
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.rounded-circle {
+  flex-shrink: 0;
+}
+
+.btn-group .btn {
+  border-radius: 6px;
+}
+
+.btn-group .btn:not(:last-child) {
+  margin-right: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .description-text {
+    max-width: 150px;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-group .btn {
+    margin-bottom: 0.25rem;
+    margin-right: 0;
+  }
+
+  .card-header .d-flex {
+    flex-direction: column;
+    align-items: start !important;
+  }
+
+  .card-header .btn {
+    margin-top: 1rem;
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 576px) {
+  .d-flex.gap-2 {
+    flex-direction: column;
+  }
+
+  .d-flex.gap-2 .btn {
+    width: 100%;
+  }
+}

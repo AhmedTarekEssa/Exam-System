@@ -1,78 +1,98 @@
+<!-- Template HTML -->
 <div class="dashboard d-flex min-vh-100 bg-light">
-  <button class="mobile-menu-btn d-lg-none" (click)="toggleSidebar()">
-    <span *ngIf="!sidebarActive">☰</span>
-    <span *ngIf="sidebarActive">✕</span>
+  <button class="mobile-menu-btn d-lg-none btn btn-primary position-fixed"
+          style="top: 1rem; left: 1rem; z-index: 1050; width: 50px; height: 50px; border-radius: 50%;"
+          (click)="toggleSidebar()">
+    <i class="fas fa-bars" *ngIf="!sidebarActive"></i>
+    <i class="fas fa-times" *ngIf="sidebarActive"></i>
   </button>
 
-  <div class="sidebar-overlay"
-       [class.active]="sidebarActive"
+  <div class="sidebar-overlay position-fixed w-100 h-100"
+       style="top: 0; left: 0; background: rgba(0,0,0,0.5); z-index: 1040; backdrop-filter: blur(2px);"
+       [class.d-none]="!sidebarActive"
        (click)="sidebarActive = false">
   </div>
 
   <!-- Sidebar -->
-  <div class="sidebar d-flex flex-column flex-shrink-0 p-3 bg-dark text-white" [class.active]="sidebarActive">
-    <div class="sidebar-header mb-4 pb-3 border-bottom">
-      <div class="logo d-flex align-items-center gap-3">
-        <div class="logo-icon fs-3">👨‍💼</div>
-        <div>
-          <h1 class="h5 mb-1">Admin Portal</h1>
-          <p class="mb-0">Management System</p>
+  <div class="sidebar d-flex flex-column flex-shrink-0 p-0 bg-dark text-white position-fixed position-lg-relative"
+       style="width: 280px; height: 100vh; z-index: 1045; box-shadow: 0 1rem 3rem rgba(0,0,0,0.175);"
+       [class.translate-start]="!sidebarActive"
+       [class.translate-none]="sidebarActive">
+
+    <div class="sidebar-header p-4 text-center"
+         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <div class="logo">
+        <div class="logo-icon mb-2" style="font-size: 2.5rem;">
+          <i class="fas fa-user-shield text-white"></i>
         </div>
+        <h1 class="h4 mb-1 fw-bold text-white">Admin Portal</h1>
+        <p class="mb-0 small text-white-50">Management System</p>
       </div>
     </div>
 
-    <div class="admin-info d-flex align-items-center p-3 rounded mb-4 bg-secondary bg-opacity-10">
-      <div class="admin-avatar d-flex align-items-center justify-content-center me-3 bg-primary rounded-circle"
-           style="width: 40px; height: 40px; font-weight: bold;">A</div>
+    <div class="admin-info d-flex align-items-center p-3 mx-3 my-3 rounded-3"
+         style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+      <div class="admin-avatar d-flex align-items-center justify-content-center me-3 rounded-circle text-white fw-bold"
+           style="width: 45px; height: 45px; background: linear-gradient(45deg, #3498db, #2ecc71); box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+        <i class="fas fa-user"></i>
+      </div>
       <div>
-        <div class="admin-name fw-bold">Administrator</div>
-        <div class="admin-role">Admin</div>
+        <div class="admin-name fw-semibold text-white">Administrator</div>
+        <div class="admin-role small text-white-50">System Admin</div>
       </div>
     </div>
 
-    <nav class="sidebar-nav d-flex flex-column gap-1">
+    <nav class="sidebar-nav d-flex flex-column gap-1 px-3 flex-grow-1">
       <a routerLink="/admin/dashboard"
          routerLinkActive="active"
-         class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded"
-         (click)="setActiveTab('dashboard')">
-        <span class="nav-icon me-3">📊</span>
+         class="nav-item nav-link text-white d-flex align-items-center px-3 py-3 rounded-2 text-decoration-none position-relative"
+         (click)="setActiveTab('dashboard')"
+         style="transition: all 0.3s ease; border-left: 3px solid transparent;">
+        <i class="nav-icon fas fa-tachometer-alt me-3" style="width: 20px; text-align: center;"></i>
         <span>Dashboard</span>
       </a>
       <a routerLink="/admin/exams"
          routerLinkActive="active"
-         class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded"
-         (click)="setActiveTab('exams')">
-        <span class="nav-icon me-3">📝</span>
+         class="nav-item nav-link text-white d-flex align-items-center px-3 py-3 rounded-2 text-decoration-none position-relative"
+         (click)="setActiveTab('exams')"
+         style="transition: all 0.3s ease; border-left: 3px solid transparent;">
+        <i class="nav-icon fas fa-clipboard-list me-3" style="width: 20px; text-align: center;"></i>
         <span>Manage Exams</span>
       </a>
       <a routerLink="/admin/questions"
          routerLinkActive="active"
-         class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded"
-         (click)="setActiveTab('questions')">
-        <span class="nav-icon me-3">❓</span>
+         class="nav-item nav-link text-white d-flex align-items-center px-3 py-3 rounded-2 text-decoration-none position-relative"
+         (click)="setActiveTab('questions')"
+         style="transition: all 0.3s ease; border-left: 3px solid transparent;">
+        <i class="nav-icon fas fa-question-circle me-3" style="width: 20px; text-align: center;"></i>
         <span>Manage Questions</span>
       </a>
       <a routerLink="/admin/results"
          routerLinkActive="active"
-         class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded"
-         (click)="setActiveTab('results')">
-        <span class="nav-icon me-3">📈</span>
+         class="nav-item nav-link text-white d-flex align-items-center px-3 py-3 rounded-2 text-decoration-none position-relative"
+         (click)="setActiveTab('results')"
+         style="transition: all 0.3s ease; border-left: 3px solid transparent;">
+        <i class="nav-icon fas fa-chart-line me-3" style="width: 20px; text-align: center;"></i>
         <span>View Results</span>
       </a>
     </nav>
 
-    <div class="mt-auto pt-3">
-      <hr class="my-3 text-white opacity-50">
-      <a (click)="logout()" class="nav-item nav-link text-white d-flex align-items-center px-3 py-2 rounded">
-        <span id ="logout" class="nav-icon me-3">🚪</span>
-        <span id ="logout">Logout</span>
-      </a>
+    <div class="mt-auto p-3">
+      <hr class="my-3 opacity-25">
+      <button (click)="logout()"
+              class="btn btn-link nav-item nav-link text-white d-flex align-items-center px-3 py-3 rounded-2 text-decoration-none w-100 text-start border-0"
+              style="transition: all 0.3s ease; background: none;">
+        <i class="nav-icon fas fa-sign-out-alt me-3" style="width: 20px; text-align: center;"></i>
+        <span>Logout</span>
+      </button>
     </div>
   </div>
 
   <!-- Main Content -->
-  <div class="main-content flex-grow-1">
-    <div class="content bg-white rounded-3 p-4 shadow-sm min-vh-90">
+  <div class="main-content flex-grow-1 d-flex flex-column"
+       style="margin-left: 280px; transition: margin-left 0.3s ease;">
+    <div class="content bg-white rounded-4 shadow-sm m-4 p-4 flex-grow-1"
+         style="border: 1px solid #dee2e6; min-height: calc(100vh - 2rem);">
       <router-outlet></router-outlet>
     </div>
   </div>

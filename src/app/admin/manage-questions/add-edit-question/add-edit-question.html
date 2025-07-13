@@ -1,91 +1,210 @@
-<div class="container mt-4">
-  <h2>{{ isEditMode ? 'Edit Question' : 'Add New Question' }}</h2>
-
-
-  @if (isLoading && !questionForm.dirty) {
-    <div class="text-center py-5">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <p class="mt-2">Loading question details...</p>
-    </div>
-  } @else {
-    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="text" class="form-label">Question Text</label>
-        <textarea class="form-control" id="text" rows="3" formControlName="text"></textarea>
-        @if (questionForm.get('text')?.invalid && questionForm.get('text')?.touched) {
-          <div class="text-danger">
-            <small *ngIf="questionForm.get('text')?.errors?.['required']">Question text is required</small>
-            <small *ngIf="questionForm.get('text')?.errors?.['minlength']">Minimum 5 characters required</small>
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10 col-xl-8">
+      <!-- Header Section -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-gradient-primary text-white py-3">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-question-circle-fill me-3 fs-4"></i>
+            <h2 class="mb-0 fs-3 fw-bold">{{ isEditMode ? 'Edit Question' : 'Add New Question' }}</h2>
           </div>
-        }
+        </div>
       </div>
 
-      <div class="mb-3">
-        <label for="type" class="form-label">Question Type</label>
-        <select class="form-select" id="type" formControlName="type">
-          @for (type of questionTypes; track type) {
-            <option [value]="type">{{ type }}</option>
-          }
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label for="position" class="form-label">Position</label>
-        <input type="number" class="form-control" id="position" formControlName="position">
-        @if (questionForm.get('position')?.invalid && questionForm.get('position')?.touched) {
-          <div class="text-danger">
-            <small *ngIf="questionForm.get('position')?.errors?.['required']">Position is required</small>
-            <small *ngIf="questionForm.get('position')?.errors?.['min']">Must be 0 or greater</small>
+      @if (isLoading && !questionForm.dirty) {
+        <!-- Loading State -->
+        <div class="card shadow-sm border-0">
+          <div class="card-body text-center py-5">
+            <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <h5 class="text-muted mb-0">Loading question details...</h5>
+            <p class="text-muted small mt-2">Please wait while we fetch the information</p>
           </div>
-        }
-      </div>
+        </div>
+      } @else {
+        <!-- Main Form -->
+        <form [formGroup]="questionForm" (ngSubmit)="onSubmit()">
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-light border-bottom">
+              <h5 class="mb-0 text-primary">
+                <i class="bi bi-pencil-square me-2"></i>
+                Question Details
+              </h5>
+            </div>
+            <div class="card-body p-4">
+              <!-- Question Text -->
+              <div class="mb-4">
+                <label for="text" class="form-label fw-semibold text-dark">
+                  <i class="bi bi-chat-quote me-2 text-primary"></i>
+                  Question Text
+                </label>
+                <textarea
+                  class="form-control form-control-lg"
+                  id="text"
+                  rows="4"
+                  formControlName="text"
+                  placeholder="Enter your question here..."
+                  style="resize: vertical; border-radius: 0.5rem;"></textarea>
+                @if (questionForm.get('text')?.invalid && questionForm.get('text')?.touched) {
+                  <div class="invalid-feedback d-block">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <small *ngIf="questionForm.get('text')?.errors?.['required']">Question text is required</small>
+                    <small *ngIf="questionForm.get('text')?.errors?.['minlength']">Minimum 5 characters required</small>
+                  </div>
+                }
+              </div>
 
-      <div class="mb-3">
-        <h5>Options</h5>
-        <div formArrayName="options">
-          @for (option of options.controls; track $index; let i = $index) {
-            <div class="card mb-2" [formGroupName]="i">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                  <div class="flex-grow-1 me-3">
-                    <input type="text" class="form-control mb-2" formControlName="text" placeholder="Option text">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" formControlName="isCorrect" id="correct-{{i}}">
-                      <label class="form-check-label" for="correct-{{i}}">Correct Answer</label>
+              <div class="row">
+                <!-- Question Type -->
+                <div class="col-md-6 mb-4">
+                  <label for="type" class="form-label fw-semibold text-dark">
+                    <i class="bi bi-list-ul me-2 text-primary"></i>
+                    Question Type
+                  </label>
+                  <select class="form-select form-select-lg" id="type" formControlName="type" style="border-radius: 0.5rem;">
+                    @for (type of questionTypes; track type) {
+                      <option [value]="type">{{ type }}</option>
+                    }
+                  </select>
+                </div>
+
+                <!-- Points -->
+                <div class="col-md-6 mb-4">
+                  <label for="points" class="form-label fw-semibold text-dark">
+                    <i class="bi bi-star me-2 text-primary"></i>
+                    Points
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control form-control-lg"
+                    id="points"
+                    formControlName="points"
+                    placeholder="Enter points"
+                    style="border-radius: 0.5rem;">
+                  @if (questionForm.get('points')?.invalid && questionForm.get('points')?.touched) {
+                    <div class="invalid-feedback d-block">
+                      <i class="bi bi-exclamation-triangle me-1"></i>
+                      <small *ngIf="questionForm.get('points')?.errors?.['required']">Points is required</small>
+                      <small *ngIf="questionForm.get('points')?.errors?.['min']">Must be 0 or greater</small>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Options Section -->
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-light border-bottom">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-primary">
+                  <i class="bi bi-check2-square me-2"></i>
+                  Answer Options
+                </h5>
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="addOption()">
+                  <i class="bi bi-plus-circle me-1"></i>
+                  Add Option
+                </button>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <div formArrayName="options">
+                @for (option of options.controls; track $index; let i = $index) {
+                  <div class="card border-start border-primary border-3 mb-3 shadow-sm" [formGroupName]="i">
+                    <div class="card-body">
+                      <div class="row align-items-start">
+                        <div class="col-12 col-md-8 mb-3 mb-md-0">
+                          <div class="position-relative">
+                            <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary">
+                              {{ i + 1 }}
+                            </span>
+                            <input
+                              type="text"
+                              class="form-control form-control-lg ps-4"
+                              formControlName="text"
+                              placeholder="Enter option text..."
+                              style="border-radius: 0.5rem;">
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-3 mb-3 mb-md-0">
+                          <div class="form-check form-switch d-flex align-items-center justify-content-center justify-content-md-start">
+                            <input
+                              class="form-check-input me-2"
+                              type="checkbox"
+                              formControlName="isCorrect"
+                              id="correct-{{i}}"
+                              style="transform: scale(1.2);">
+                            <label class="form-check-label fw-medium text-success" for="correct-{{i}}">
+                              <i class="bi bi-check-circle me-1"></i>
+                              Correct
+                            </label>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-1 text-center text-md-end">
+                          <button
+                            type="button"
+                            class="btn btn-outline-danger btn-sm"
+                            (click)="removeOption(i)"
+                            title="Remove option">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <button type="button" class="btn btn-danger btn-sm" (click)="removeOption(i)">
-                    <i class="bi bi-trash"></i>
-                  </button>
+                }
+              </div>
+
+              @if (options.controls.length === 0) {
+                <div class="text-center py-4">
+                  <i class="bi bi-plus-circle text-muted" style="font-size: 3rem;"></i>
+                  <p class="text-muted mt-2">No options added yet. Click "Add Option" to get started.</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          @if (error) {
+            <div class="alert alert-danger border-0 shadow-sm mb-4" role="alert">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <div>
+                  <strong>Error:</strong> {{ error }}
                 </div>
               </div>
             </div>
           }
-        </div>
-        <button type="button" class="btn btn-secondary btn-sm" (click)="addOption()">
-          <i class="bi bi-plus"></i> Add Option
-        </button>
-      </div>
 
-      @if (error) {
-        <div class="alert alert-danger mb-3">{{ error }}</div>
+          <!-- Action Buttons -->
+          <div class="card shadow-sm border-0">
+            <div class="card-body bg-light">
+              <div class="d-flex flex-column flex-sm-row justify-content-end gap-3">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-lg px-4"
+                  (click)="router.navigate(['/admin/questions'])">
+                  <i class="bi bi-arrow-left me-2"></i>
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg px-4"
+                  [disabled]="questionForm.invalid || isLoading">
+                  @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                    Processing...
+                  } @else {
+                    <i class="bi bi-check-circle me-2"></i>
+                    {{ isEditMode ? 'Update' : 'Save' }} Question
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
       }
-
-      <div class="d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-secondary"
-                (click)="router.navigate(['/admin/questions'])">
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="questionForm.invalid || isLoading">
-          @if (isLoading) {
-            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-          } @else {
-            {{ isEditMode ? 'Update' : 'Save' }} Question
-          }
-        </button>
-      </div>
-    </form>
-  }
+    </div>
+  </div>
 </div>

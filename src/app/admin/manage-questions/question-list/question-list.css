@@ -1,0 +1,62 @@
+.question-text {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.feature-item {
+  text-align: center;
+  padding: 1rem;
+}
+
+.bg-gradient {
+  background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary-dark, #0056b3) 100%) !important;
+}
+
+.bg-gradient.bg-success {
+  background: linear-gradient(135deg, var(--bs-success) 0%, var(--bs-success-dark, #0f5132) 100%) !important;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: none;
+}
+
+.btn {
+  border-radius: 8px;
+}
+
+.form-select {
+  border-radius: 8px;
+}
+
+.badge {
+  border-radius: 6px;
+}
+
+.table th {
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+  .question-text {
+    max-width: 150px;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .btn-group .btn {
+    margin-bottom: 0.25rem;
+  }
+}

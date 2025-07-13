@@ -33,7 +33,7 @@ export class QuestionService {
   createQuestion(examId: number, questionData: {
     text: string,
     type: string,
-    position: number,
+    points: number,
     options: IQuestionOption[]
   }): Observable<IQuestion> {
     const token = localStorage.getItem('jwtToken');
@@ -48,7 +48,7 @@ export class QuestionService {
   updateQuestion(examId: number, questionId: number, questionData: {
     text: string,
     type: string,
-    position: number,
+    points: number,
     options: IQuestionOption[]
   }): Observable<IQuestion> {
     const token = localStorage.getItem('jwtToken');
