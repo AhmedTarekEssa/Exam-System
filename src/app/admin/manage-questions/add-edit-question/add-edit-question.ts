@@ -33,7 +33,7 @@
 //     this.questionForm = this.fb.group({
 //       text: ['', [Validators.required, Validators.minLength(5)]],
 //       type: ['MultipleChoice', [Validators.required]],
-//       position: [0, [Validators.required, Validators.min(0)]],
+//       points: [0, [Validators.required, Validators.min(0)]],
 //       options: this.fb.array([])
 //     });
 //   }
@@ -84,7 +84,7 @@
 //         this.questionForm.patchValue({
 //           text: question.text,
 //           type: question.type,
-//           position: question.position
+//           points: question.points
 //         });
 
 //         // Clear existing options
@@ -124,7 +124,7 @@
 //     const questionData = {
 //       text: this.questionForm.value.text,
 //       type: this.questionForm.value.type,
-//       position: this.questionForm.value.position,
+//       points: this.questionForm.value.points,
 //       options: this.questionForm.value.options
 //     };
 
@@ -218,7 +218,7 @@ export class AddEditQuestion implements OnInit {
     this.questionForm = this.fb.group({
       text: ['', [Validators.required, Validators.minLength(5)]],
       type: ['MultipleChoice', [Validators.required]],
-      position: [0, [Validators.required, Validators.min(0)]],
+      points: [0, [Validators.required, Validators.min(0)]],
       options: this.fb.array([])
     });
   }
@@ -269,7 +269,7 @@ export class AddEditQuestion implements OnInit {
         this.questionForm.patchValue({
           text: question.text,
           type: question.type,
-          position: question.position
+          points: question.points
         });
 
         // Clear existing options
@@ -309,7 +309,7 @@ export class AddEditQuestion implements OnInit {
     const questionData = {
       text: this.questionForm.value.text,
       type: this.questionForm.value.type,
-      position: this.questionForm.value.position,
+      points: this.questionForm.value.points,
       options: this.questionForm.value.options
     };
 

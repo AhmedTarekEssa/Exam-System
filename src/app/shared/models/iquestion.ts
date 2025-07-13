@@ -2,7 +2,7 @@ export interface IQuestion {
   id: number;
   text: string;
   type: string;
-  position: number;
+  points: number;
   options?: IQuestionOption[];
   examId: number;
 }
