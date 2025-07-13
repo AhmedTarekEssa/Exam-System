@@ -52,8 +52,38 @@ export class DashboardContent implements OnInit {
     this.examService.getAllExams().subscribe({
       next: (exams) => {
         this.calculateExamAnalytics(exams);
+
+        const allQuestions: any[] = [];
+
+        let examsProcessed = 0;
+        const totalExams = exams.length;
+
+        if (totalExams === 0) {
+          this.isLoading = false;
+          return;
+        }
+
         for (const exam of exams) {
-          this.loadQuestionData(exam.id);
+          this.examService.getExamById(exam.id).subscribe({
+            next: (examDetails) => {
+              const questions = examDetails.questions || [];
+              allQuestions.push(...questions);
+
+              // Load result data for each exam
+              this.loadResultData(exam.id);
+
+              examsProcessed++;
+              if (examsProcessed === totalExams) {
+                // Once all exams have been processed
+                this.calculateQuestionAnalytics(allQuestions);
+                this.isLoading = false;
+                this.cdr.detectChanges();
+              }
+            },
+            error: (err) => {
+              this.handleError('Failed to load exam detail', err);
+            }
+          });
         }
       },
       error: (err) => {
@@ -76,19 +106,6 @@ export class DashboardContent implements OnInit {
       : 0;
   }
 
-  private loadQuestionData(exId: number): void {
-    this.examService.getExamById(exId).subscribe({
-      next: (exam) => {
-        this.calculateQuestionAnalytics(exam.questions || []);
-        this.loadResultData(exId);
-        this.cdr.detectChanges(); // Ensure the UI is updated
-      },
-      error: (err) => {
-        this.handleError('Failed to load exam detail', err);
-      }
-    });
-  }
-
   private calculateQuestionAnalytics(questions: any[]): void {
     this.totalQuestions = questions.length;
     this.multipleChoiceQuestions = questions.filter(q => q.type === 'MultipleChoice').length;
@@ -96,12 +113,11 @@ export class DashboardContent implements OnInit {
     this.shortAnswerQuestions = questions.filter(q => q.type === 'ShortAnswer').length;
   }
 
-  private loadResultData(exId: number): void {
-    this.resultService.getResultsByExam(exId).subscribe({
+  private loadResultData(examId: number): void {
+    this.resultService.getResultsByExam(examId).subscribe({
       next: (results) => {
         this.calculateResultAnalytics(results);
-        this.isLoading = false;
-        this.cdr.detectChanges(); // Trigger update if needed
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.handleError('Failed to load result data', err);
@@ -112,13 +128,15 @@ export class DashboardContent implements OnInit {
   private calculateResultAnalytics(results: any[]): void {
     if (results.length === 0) return;
 
-    this.totalAttempts = results.length;
+    this.totalAttempts += results.length;
 
     const totalScore = results.reduce((sum, result) => sum + result.score, 0);
-    this.averageScore = Math.round(totalScore / results.length);
+    this.averageScore = Math.round((this.averageScore + totalScore / results.length) / 2);
 
     const completedResults = results.filter(result => result.status === 'completed');
-    this.completionRate = Math.round((completedResults.length / results.length) * 100);
+    this.completionRate = Math.round(
+      ((this.completionRate + (completedResults.length / results.length) * 100) / 2)
+    );
 
     const examScores = results.reduce((acc: any, result: any) => {
       acc[result.examId] = (acc[result.examId] || 0) + result.score;
@@ -129,7 +147,7 @@ export class DashboardContent implements OnInit {
       examScores[a] > examScores[b] ? a : b
     );
 
-    this.topScore = Math.max(...results.map(r => r.score));
+    this.topScore = Math.max(this.topScore, ...results.map(r => r.score));
     this.topPerformingExam = `Exam ${topExamId}`;
   }
 
@@ -137,7 +155,7 @@ export class DashboardContent implements OnInit {
     console.error(message, error);
     this.error = message;
     this.isLoading = false;
-    this.cdr.detectChanges(); // Reflect error in UI
+    this.cdr.detectChanges();
   }
 
   refreshData(): void {
