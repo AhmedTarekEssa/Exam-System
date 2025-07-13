@@ -1,66 +1,13 @@
-<div class="section-title">
-  📊 Exam Results
-</div>
+<div class="results-page">
+  <h2>📊 Exam Results Overview</h2>
 
-<div class="results-container">
-  <div class="results-header">
-    <h3>Academic Performance</h3>
-    <p>Your exam results and grades overview</p>
-  </div>
-
-  <div class="results-table">
-    <div class="table-header">
-      <div>Exam</div>
-      <div>Grade</div>
-      <div>Score</div>
-      <div>Date</div>
-      <div>Status</div>
+  <div class="cards-wrapper">
+    <div class="result-card" *ngFor="let result of results">
+      <h3>{{ result.examTitle }}</h3>
+      <p><strong>Score:</strong> {{ result.score }} / {{ result.totalPoints }}</p>
+      <p><strong>Grade:</strong> {{ getGrade(result.score, result.totalPoints) }}</p>
+      <p><strong>Status:</strong> {{ getStatus(result.score, result.totalPoints) }}</p>
+      <p class="date">🕒 {{ result.endTime | date: 'medium' }}</p>
     </div>
-
-    <div class="table-row">
-      <div class="exam-info">
-        <h4>Data Structures Final</h4>
-        <p>Computer Science</p>
-      </div>
-      <div class="grade-badge grade-a">A</div>
-      <div class="score">92%</div>
-      <div style="color: #718096;">Nov 28, 2024</div>
-      <div class="status-badge status-excellent">Excellent</div>
-    </div>
-
-    <!-- More results go here -->
-  </div>
-</div>
-<div class="section-title">
-  📊 Exam Results
-</div>
-
-<div class="results-container">
-  <div class="results-header">
-    <h3>Academic Performance</h3>
-    <p>Your exam results and grades overview</p>
-  </div>
-
-  <div class="results-table">
-    <div class="table-header">
-      <div>Exam</div>
-      <div>Grade</div>
-      <div>Score</div>
-      <div>Date</div>
-      <div>Status</div>
-    </div>
-
-    <div class="table-row">
-      <div class="exam-info">
-        <h4>Data Structures Final</h4>
-        <p>Computer Science</p>
-      </div>
-      <div class="grade-badge grade-a">A</div>
-      <div class="score">92%</div>
-      <div style="color: #718096;">Nov 28, 2024</div>
-      <div class="status-badge status-excellent">Excellent</div>
-    </div>
-
-    <!-- More results go here -->
   </div>
 </div>
