@@ -1,13 +1,36 @@
-<div class="results-page">
-  <h2>📊 Exam Results Overview</h2>
+<div class="exam-results-container">
+  <div class="exam-card" *ngFor="let result of results">
+    <div class="exam-results-content">
+      <div class="exam-header">
+        <span class="exam-icon">📊</span>
+        <span class="exam-title-text">Exam Results Overview</span>
+      </div>
 
-  <div class="cards-wrapper">
-    <div class="result-card" *ngFor="let result of results">
-      <h3>{{ result.examTitle }}</h3>
-      <p><strong>Score:</strong> {{ result.score }} / {{ result.totalPoints }}</p>
-      <p><strong>Grade:</strong> {{ getGrade(result.score, result.totalPoints) }}</p>
-      <p><strong>Status:</strong> {{ getStatus(result.score, result.totalPoints) }}</p>
-      <p class="date">🕒 {{ result.endTime | date: 'medium' }}</p>
+      <div class="exam-title">
+        {{ result.examTitle }}
+      </div>
+
+      <div class="exam-details">
+        <div class="detail-item">
+          <span class="detail-label">Score:</span>
+          <span class="detail-value score-value">{{ result.score }} / {{ result.totalPoints }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Grade:</span>
+          <span class="detail-value grade-value">{{ getGrade(result.score, result.totalPoints) }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value status-value">{{ getStatus(result.score, result.totalPoints) }}</span>
+        </div>
+      </div>
+
+      <div class="time-container">
+        <span class="time-icon">🕒</span>
+        <span class="time-value">{{ result.endTime | date: 'medium' }}</span>
+      </div>
     </div>
   </div>
 </div>

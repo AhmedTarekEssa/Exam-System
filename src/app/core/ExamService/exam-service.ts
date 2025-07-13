@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IStudentResponse } from '../../shared/models/istudent-response';
@@ -39,5 +39,14 @@ export class ExamService {
 
   submitExam(resultId: number, answers: IAnswerSubmission[]): Observable<ISubmitExamResponse> {
     return this.http.post<ISubmitExamResponse>(`${this.baseUrl}/results/${resultId}/submit`, answers);
+  }
+
+  getStudentResults(): Observable<any[]> {
+    const token = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.get<any[]>(`${this.baseUrl}/results`, { headers });
   }
 }

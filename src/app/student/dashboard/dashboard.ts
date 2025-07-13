@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminRoutingModule } from "../../admin/admin-routing-module";
 import { CommonModule } from '@angular/common';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { Route, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { Auth } from '../../core/auth';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,6 +12,10 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 })
 export class Dashboard {
 
-
+    constructor(private auth: Auth, private router: Router) {}
+    logout() {
+    this.auth.logout();
+    this.router.navigate(['/auth/login']);
+  }
 
 }

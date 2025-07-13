@@ -1,4 +1,174 @@
-<div class="header">
-  <h2 id="page-title">Dashboard</h2>
-  <p id="page-subtitle">Welcome back, {{[UserName]}}! Here's your academic overview</p>
+<div class="dashboard-container">
+  <div class="header">
+    <h2 id="page-title">Dashboard</h2>
+    <p id="page-subtitle">Welcome back, {{ UserName }}! Here's your academic overview</p>
+  </div>
+
+  <div class="analysis" *ngIf="analysis">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <strong>Total Exams Taken:</strong>
+        <div class="stat-value">{{ analysis.totalExams }}</div>
+      </div>
+      <div class="stat-card">
+        <strong>Average Score:</strong>
+        <div class="stat-value">{{ analysis.averageScore }}%</div>
+      </div>
+      <div class="stat-card">
+        <strong>Best Score:</strong>
+        <div class="stat-value">{{ analysis.bestScore }}%</div>
+      </div>
+      <div class="stat-card">
+        <strong>Lowest Score:</strong>
+        <div class="stat-value">{{ analysis.lowestScore }}%</div>
+      </div>
+      <div class="stat-card">
+        <strong>Success Rate (>= 50%):</strong>
+        <div class="stat-value">{{ analysis.successRate }}%</div>
+      </div>
+    </div>
+
+    <!-- Visual Progress Charts -->
+    <div class="charts-container">
+      <div class="chart-card">
+        <h3 class="chart-title">Performance Metrics</h3>
+        <div class="visual-chart">
+          <div class="metric-row">
+            <span class="metric-label">Average Score</span>
+            <div class="progress-bar" style="width: 200px;">
+              <div class="progress-fill" [style.width.%]="analysis.averageScore">
+                <span class="progress-text">{{ analysis.averageScore }}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Best Score</span>
+            <div class="progress-bar" style="width: 200px;">
+              <div class="progress-fill" [style.width.%]="analysis.bestScore">
+                <span class="progress-text">{{ analysis.bestScore }}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Success Rate</span>
+            <div class="progress-bar" style="width: 200px;">
+              <div class="progress-fill" [style.width.%]="analysis.successRate">
+                <span class="progress-text">{{ analysis.successRate }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3 class="chart-title">Score Distribution</h3>
+        <div class="score-distribution">
+          <div class="score-item score-excellent">
+            <div style="font-size: 2em; font-weight: bold;">
+              {{ analysis.averageScore >= 90 ? '★' : (analysis.bestScore >= 90 ? '1' : '0') }}
+            </div>
+            <div>Excellent</div>
+            <div style="font-size: 0.8em;">90-100%</div>
+          </div>
+          <div class="score-item score-good">
+            <div style="font-size: 2em; font-weight: bold;">
+              {{ analysis.averageScore >= 70 && analysis.averageScore < 90 ? '★' : '😔' }}
+            </div>
+            <div>Good</div>
+            <div style="font-size: 0.8em;">70-89%</div>
+          </div>
+          <div class="score-item score-average">
+            <div style="font-size: 2em; font-weight: bold;">
+              {{ analysis.averageScore >= 50 && analysis.averageScore < 70 ? '★' : '😔' }}
+            </div>
+            <div>Average</div>
+            <div style="font-size: 0.8em;">50-69%</div>
+          </div>
+          <div class="score-item score-poor">
+            <div style="font-size: 2em; font-weight: bold;">
+              {{ analysis.averageScore < 50 ? '★' : '0' }}
+            </div>
+            <div>Poor</div>
+            <div style="font-size: 0.8em;">&lt;50%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-container">
+      <div class="chart-card">
+        <h3 class="chart-title performance-card">Performance Trend</h3>
+        <div class="trend-visualization mt-5">
+          <div class="trend-bar " [style.height.px]="analysis.lowestScore * 2">
+            <div class="trend-label">Lowest</div>
+          </div>
+          <div class="trend-bar" [style.height.px]="analysis.averageScore * 2">
+            <div class="trend-label">Average</div>
+          </div>
+          <div class="trend-bar" [style.height.px]="analysis.bestScore * 2">
+            <div class="trend-label">Best</div>
+          </div>
+          <div class="trend-bar" [style.height.px]="analysis.successRate * 2">
+            <div class="trend-label">Success</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3 class="chart-title">Performance Analysis</h3>
+        <div class="visual-chart">
+          <div style="text-align: center; margin: 20px 0;">
+            <div style="font-size: 4em;" 
+                 [style.color]="
+                   analysis.averageScore >= 80 ? '#4CAF50' :
+                   analysis.averageScore >= 60 ? '#FF9800' :
+                   '#f44336'
+                 ">
+              {{
+                analysis.averageScore >= 80 ? '😊' :
+                analysis.averageScore >= 60 ? '😐' :
+                '😔'
+              }}
+            </div>
+            <div style="font-size: 1.5em; font-weight: bold; margin-top: 10px;">
+              {{
+                analysis.averageScore >= 80 ? 'Great Job!' :
+                analysis.averageScore >= 60 ? 'Good Work!' :
+                'Keep Trying!'
+              }}
+            </div>
+          </div>
+
+          <div class="performance-indicator" [ngClass]="{
+            'excellent': analysis.averageScore >= 90,
+            'good': analysis.averageScore >= 75 && analysis.averageScore < 90,
+            'needs-improvement': analysis.averageScore < 75
+          }">
+            Overall Performance:
+            {{
+              analysis.averageScore >= 90 ? 'Excellent - Outstanding work!' :
+              analysis.averageScore >= 75 ? 'Good - Keep up the great work!' :
+              'Needs Improvement - You can do it!'
+            }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <h4>🎯 Achievement</h4>
+        <p>You've completed {{ analysis.totalExams }} exams with {{ analysis.successRate }}% success rate</p>
+      </div>
+      <div class="summary-card">
+        <h4>📈 Progress</h4>
+        <p>Your average score is {{ analysis.averageScore }}% - {{ analysis.averageScore >= 70 ? 'Above' : 'Below' }} average performance</p>
+      </div>
+      <div class="summary-card">
+        <h4>🏆 Best Performance</h4>
+        <p>Your highest score was {{ analysis.bestScore }}% - {{ analysis.bestScore >= 90 ? 'Excellent!' : 'Good job!' }}</p>
+      </div>
+    </div>
+  </div>
 </div>

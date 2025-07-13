@@ -15,11 +15,10 @@ import { ExamService } from '../../../core/ExamService/exam-service';
   styleUrl: './exam-list.css'
 })
 export class ExamList implements OnInit {
-
   ExamLists: IExam[] = [];
+  TakenExamIds: Set<number> = new Set();
 
-  constructor(private examSer: ExamService, private router: Router,private route: ActivatedRoute) {
-    // Re-fetch data on route re-entry
+  constructor(private examSer: ExamService, private router: Router, private route: ActivatedRoute) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
@@ -32,28 +31,49 @@ export class ExamList implements OnInit {
   }
 
   loadExams() {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) return;
+
+    // Load all exams
     this.examSer.getAllExams().subscribe({
-      next: (data) => this.ExamLists = data,
-      error: (err) => console.error('Failed to load exams', err)
+      next: (data) => {
+        this.ExamLists = data;
+
+        // Load taken exams after exam list
+        this.examSer.getStudentResults().subscribe({
+          next: (results) => {
+            this.TakenExamIds = new Set(results.map(r => r.examId));
+          },
+          error: (err) => {
+            console.error('Failed to load student results', err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Failed to load exams', err);
+      }
     });
   }
 
-startExam(examId: number): void {
-  this.examSer.startExam(examId).subscribe({
-    next: (res) => {
-      console.log(examId);
-      console.log('Started exam with resultId:', res.resultId);
-this.router.navigate(['/student/exams/take', res.resultId]);
-// ✅ Just this
-    },
-    error: (err: any) => {
-      console.error('Failed to start exam', err);
-      alert('Could not start the exam. Please try again.');
+  hasTakenExam(examId: number): boolean {
+    return this.TakenExamIds.has(examId);
+  }
+
+  startExam(examId: number): void {
+    if (this.hasTakenExam(examId)) {
+      alert("You've already taken this exam.");
+      return;
     }
-  });
+
+    this.examSer.startExam(examId).subscribe({
+      next: (res) => {
+        this.router.navigate(['/student/exams/take', res.resultId]);
+      },
+      error: (err) => {
+        console.error('Failed to start exam', err);
+        alert('Could not start the exam. Please try again.');
+      }
+    });
+  }
 }
 
-
-
-
-}

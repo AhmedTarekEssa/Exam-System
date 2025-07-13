@@ -6,8 +6,15 @@
         <div class="exam-title">{{ exam.title }}</div>
         <div class="exam-subject">{{ exam.description }}</div>
       </div>
-      <div class="exam-status status-available">Available</div>
+<div
+  class="exam-status"
+  [ngClass]="hasTakenExam(exam.id) ? 'status-not-available' : 'status-available'"
+>
+  {{ hasTakenExam(exam.id) ? 'Not Available' : 'Available' }}
+</div>
+
     </div>
+
     <div class="exam-details">
       <div class="detail-item">
         <div class="detail-value">{{ exam.durationMinutes }} min</div>
@@ -18,8 +25,15 @@
         <div class="detail-label">Questions</div>
       </div>
     </div>
-<div class="exam-actions">
-  <button class="btn btn-primary" (click)="startExam(exam.id)">Start Exam</button>
-</div>
+
+    <div class="exam-actions">
+      <button
+        class="btn btn-primary"
+        [disabled]="hasTakenExam(exam.id)"
+        (click)="startExam(exam.id)"
+      >
+        {{ hasTakenExam(exam.id) ? 'Already Taken' : 'Start Exam' }}
+      </button>
+    </div>
   </div>
 </div>
