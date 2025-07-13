@@ -1,1 +1,112 @@
-hhhhhh
+<div class="dashboard-container">
+  <div class="header">
+    <h2>Exam System Dashboard</h2>
+    <button (click)="refreshData()" class="refresh-btn">
+      <i class="bi bi-arrow-clockwise"></i> Refresh Data
+    </button>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading dashboard data...</p>
+    </div>
+  } @else if (error) {
+    <div class="error-state">
+      <p>{{ error }}</p>
+      <button (click)="refreshData()" class="retry-btn">Retry</button>
+    </div>
+  } @else {
+    <div class="metrics-grid">
+      <!-- Exam Metrics -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <h3>Exams</h3>
+        </div>
+        <div class="metric-body">
+          <div class="metric-item">
+            <span class="metric-label">Total Exams:</span>
+            <span class="metric-value">{{ totalExams }}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">This Month:</span>
+            <span class="metric-value">{{ examsThisMonth }}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Avg Questions:</span>
+            <span class="metric-value">{{ averageQuestionsPerExam }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question Metrics -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <h3>Questions</h3>
+        </div>
+        <div class="metric-body">
+          <div class="metric-item">
+            <span class="metric-label">Total Questions:</span>
+            <span class="metric-value">{{ totalQuestions }}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Multiple Choice:</span>
+            <span class="metric-value">{{ multipleChoiceQuestions }}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">True/False:</span>
+            <span class="metric-value">{{ trueFalseQuestions }}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Short Answer:</span>
+            <span class="metric-value">{{ shortAnswerQuestions }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Metrics -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <h3>Results</h3>
+        </div>
+        <div class="metric-body">
+          <div class="metric-item">
+            <span class="metric-label">Total Attempts:</span>
+            <span class="metric-value">{{ totalAttempts }}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Average Score:</span>
+            <span class="metric-value">{{ averageScore }}%</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Completion Rate:</span>
+            <span class="metric-value">{{ completionRate }}%</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Top Exam:</span>
+            <span class="metric-value">{{ topPerformingExam }} ({{ topScore }}%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="activity-section">
+      <h3>Recent Activity</h3>
+      <div class="activity-list">
+        <div class="activity-item">
+          <span class="activity-icon">✓</span>
+          <span>5 exams completed today</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-icon">+</span>
+          <span>3 new questions added</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-icon">★</span>
+          <span>Exam 12 had the highest average score this week</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>
