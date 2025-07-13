@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ExamService } from '../../../core/admin-serveces/exam-service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { IExam } from '../../../shared/models/iexam';
 import { IQuestion } from '../../../shared/models/iquestion';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef } from '@angular/core';
+import { QuestionService } from '../../../core/admin-serveces/question-service';
 
 @Component({
   selector: 'app-question-list',
   standalone: true,
-  imports: [CommonModule, RouterModule], // Added RouterModule here
+  imports: [CommonModule, RouterModule],
   templateUrl: './question-list.html',
   styleUrls: ['./question-list.css']
 })
@@ -23,6 +23,7 @@ export class QuestionList implements OnInit {
 
   constructor(
     private examService: ExamService,
+    private questionService: QuestionService,
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -31,7 +32,6 @@ export class QuestionList implements OnInit {
   ngOnInit(): void {
     this.loadInitialData();
 
-    // Watch for route changes
     this.route.params.subscribe(params => {
       this.selectedExamId = params['examId'] ? +params['examId'] : null;
       this.loadSelectedExamData();
@@ -78,20 +78,37 @@ export class QuestionList implements OnInit {
     });
   }
 
+  deleteQuestion(questionId: number): void {
+    if (!this.selectedExamId) {
+      this.error = 'No exam selected to delete questions from.';
+      return;
+    }
+
+    this.questionService.deleteQuestion(this.selectedExamId, questionId).subscribe({
+      next: () => {
+        // Remove the deleted question from the local array
+        this.questions = this.questions.filter(q => q.id !== questionId);
+        this.cdr.detectChanges();
+        console.log(`Question ${questionId} deleted successfully`);
+      },
+      error: (err) => {
+        this.error = 'Failed to delete question. Please try again.';
+        console.error('Error deleting question:', err);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   onExamSelect(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const examId = select.value ? +select.value : null;
     this.selectedExamId = examId;
     this.loadSelectedExamData();
-    // Navigate to the question list for the selected exa
 
     if (examId) {
       console.log('Navigating to exam:', examId);
-      this.selectedExamId = examId;
-      // this.router.navigate(['/admin/exams', examId, 'questions']);
     } else {
-      console.log('No exam selected, navigating to question list');
-      // this.router.navigate(['/admin/exams/questions']);
+      console.log('No exam selected');
     }
   }
 }
