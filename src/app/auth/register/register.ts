@@ -9,6 +9,7 @@ import { environment } from '../../../environments/environments';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './register.html',
   styleUrl: './register.css'
@@ -17,17 +18,36 @@ export class Register implements OnInit {
   registerForm!: FormGroup;
   error = '';
   success = '';
-  private apiUrl = environment.apiUrl; // Use environment variable for API URL
+  private apiUrl = environment.apiUrl;
 
   constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
-      username: ['', Validators.required],
+      username: ['', [Validators.required, this.noWhitespaceValidator]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(6),
+        this.passwordStrengthValidator
+      ]],
       confirmPassword: ['', Validators.required]
     }, { validators: this.matchPasswords });
+  }
+
+  noWhitespaceValidator(control: any) {
+    const isWhitespace = (control.value || '').indexOf(' ') >= 0;
+    return isWhitespace ? { whitespace: true } : null;
+  }
+
+  passwordStrengthValidator(control: any) {
+    const value = control.value || '';
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasLowerCase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+    const valid = hasUpperCase && hasLowerCase && hasNumber && hasSymbol;
+    return !valid ? { passwordStrength: true } : null;
   }
 
   matchPasswords(group: FormGroup) {
@@ -51,4 +71,3 @@ export class Register implements OnInit {
     });
   }
 }
-
