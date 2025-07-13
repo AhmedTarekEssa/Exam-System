@@ -1,110 +1,240 @@
-<div class="dashboard-container">
-  <div class="header">
-    <h2>Exam System Dashboard</h2>
-    <button (click)="refreshData()" class="refresh-btn">
-      <i class="bi bi-arrow-clockwise"></i> Refresh Data
-    </button>
+<div class="container-fluid py-4">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-gradient-primary text-white py-3">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div class="d-flex align-items-center mb-2 mb-md-0">
+              <i class="bi bi-speedometer2 me-3 fs-3"></i>
+              <h2 class="mb-0 fs-2 fw-bold">Exam System Dashboard</h2>
+            </div>
+            <button (click)="refreshData()" class="btn btn-light btn-lg">
+              <i class="bi bi-arrow-clockwise me-2"></i>
+              Refresh Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   @if (isLoading) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Loading dashboard data...</p>
+    <!-- Loading State -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow-sm border-0">
+          <div class="card-body text-center py-5">
+            <div class="spinner-border text-primary mb-3" role="status" style="width: 4rem; height: 4rem;">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <h4 class="text-muted mb-2">Loading dashboard data...</h4>
+            <p class="text-muted">Please wait while we gather the latest information</p>
+          </div>
+        </div>
+      </div>
     </div>
   } @else if (error) {
-    <div class="error-state">
-      <p>{{ error }}</p>
-      <button (click)="refreshData()" class="retry-btn">Retry</button>
+    <!-- Error State -->
+    <div class="row">
+      <div class="col-12">
+        <div class="alert alert-danger border-0 shadow-sm" role="alert">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+              <div>
+                <h5 class="mb-0">Error Loading Dashboard</h5>
+                <p class="mb-0">{{ error }}</p>
+              </div>
+            </div>
+            <button (click)="refreshData()" class="btn btn-outline-danger">
+              <i class="bi bi-arrow-clockwise me-1"></i>
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   } @else {
-    <div class="metrics-grid">
+    <!-- Metrics Grid -->
+    <div class="row mb-4">
       <!-- Exam Metrics -->
-      <div class="metric-card">
-        <div class="metric-header">
-          <h3>Exams</h3>
-        </div>
-        <div class="metric-body">
-          <div class="metric-item">
-            <span class="metric-label">Total Exams:</span>
-            <span class="metric-value">{{ totalExams }}</span>
+      <div class="col-12 col-lg-4 mb-4">
+        <div class="card shadow-sm border-0 h-100 metric-card">
+          <div class="card-header bg-gradient-success text-white">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-file-earmark-text-fill me-2 fs-4"></i>
+              <h5 class="mb-0">Exams</h5>
+            </div>
           </div>
-          <div class="metric-item">
-            <span class="metric-label">This Month:</span>
-            <span class="metric-value">{{ examsThisMonth }}</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Avg Questions:</span>
-            <span class="metric-value">{{ averageQuestionsPerExam }}</span>
+          <div class="card-body">
+            <div class="metric-item d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-collection-fill text-success me-2"></i>
+                <span class="metric-label">Total Exams</span>
+              </div>
+              <span class="badge bg-success fs-6">{{ totalExams }}</span>
+            </div>
+            <div class="metric-item d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-calendar-month text-info me-2"></i>
+                <span class="metric-label">This Month</span>
+              </div>
+              <span class="badge bg-info fs-6">{{ examsThisMonth }}</span>
+            </div>
+            <div class="metric-item d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-bar-chart-fill text-warning me-2"></i>
+                <span class="metric-label">Avg Questions</span>
+              </div>
+              <span class="badge bg-warning fs-6">{{ averageQuestionsPerExam }}</span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Question Metrics -->
-      <div class="metric-card">
-        <div class="metric-header">
-          <h3>Questions</h3>
-        </div>
-        <div class="metric-body">
-          <div class="metric-item">
-            <span class="metric-label">Total Questions:</span>
-            <span class="metric-value">{{ totalQuestions }}</span>
+      <div class="col-12 col-lg-4 mb-4">
+        <div class="card shadow-sm border-0 h-100 metric-card">
+          <div class="card-header bg-gradient-info text-white">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-question-circle-fill me-2 fs-4"></i>
+              <h5 class="mb-0">Questions</h5>
+            </div>
           </div>
-          <div class="metric-item">
-            <span class="metric-label">Multiple Choice:</span>
-            <span class="metric-value">{{ multipleChoiceQuestions }}</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">True/False:</span>
-            <span class="metric-value">{{ trueFalseQuestions }}</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Short Answer:</span>
-            <span class="metric-value">{{ shortAnswerQuestions }}</span>
+          <div class="card-body">
+            <div class="metric-item d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-list-ul text-primary me-2"></i>
+                <span class="metric-label">Total Questions</span>
+              </div>
+              <span class="badge bg-primary fs-6">{{ totalQuestions }}</span>
+            </div>
+            <div class="metric-item d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check2-square text-success me-2"></i>
+                <span class="metric-label">Multiple Choice</span>
+              </div>
+              <span class="badge bg-success fs-6">{{ multipleChoiceQuestions }}</span>
+            </div>
+            <div class="metric-item d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-toggle-on text-warning me-2"></i>
+                <span class="metric-label">True/False</span>
+              </div>
+              <span class="badge bg-warning fs-6">{{ trueFalseQuestions }}</span>
+            </div>
+            <div class="metric-item d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-textarea-t text-info me-2"></i>
+                <span class="metric-label">Short Answer</span>
+              </div>
+              <span class="badge bg-info fs-6">{{ shortAnswerQuestions }}</span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Result Metrics -->
-      <div class="metric-card">
-        <div class="metric-header">
-          <h3>Results</h3>
-        </div>
-        <div class="metric-body">
-          <div class="metric-item">
-            <span class="metric-label">Total Attempts:</span>
-            <span class="metric-value">{{ totalAttempts }}</span>
+      <div class="col-12 col-lg-4 mb-4">
+        <div class="card shadow-sm border-0 h-100 metric-card">
+          <div class="card-header bg-gradient-warning text-white">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-graph-up me-2 fs-4"></i>
+              <h5 class="mb-0">Results</h5>
+            </div>
           </div>
-          <div class="metric-item">
-            <span class="metric-label">Average Score:</span>
-            <span class="metric-value">{{ averageScore }}%</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Completion Rate:</span>
-            <span class="metric-value">{{ completionRate }}%</span>
-          </div>
-          <div class="metric-item">
-            <span class="metric-label">Top Exam:</span>
-            <span class="metric-value">{{ topPerformingExam }} ({{ topScore }}%)</span>
+          <div class="card-body">
+            <div class="metric-item d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-people-fill text-primary me-2"></i>
+                <span class="metric-label">Total Attempts</span>
+              </div>
+              <span class="badge bg-primary fs-6">{{ totalAttempts }}</span>
+            </div>
+            <div class="metric-item d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-trophy-fill text-success me-2"></i>
+                <span class="metric-label">Average Score</span>
+              </div>
+              <span class="badge bg-success fs-6">{{ averageScore }}%</span>
+            </div>
+            <div class="metric-item d-flex justify-content-between align-items-center mb-3">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-info me-2"></i>
+                <span class="metric-label">Completion Rate</span>
+              </div>
+              <span class="badge bg-info fs-6">{{ completionRate }}%</span>
+            </div>
+            <div class="metric-item d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-star-fill text-warning me-2"></i>
+                <span class="metric-label">Top Exam</span>
+              </div>
+              <div class="text-end">
+                <div class="badge bg-warning fs-6">{{ topScore }}%</div>
+                <div class="small text-muted">{{ topPerformingExam }}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Recent Activity -->
-    <div class="activity-section">
-      <h3>Recent Activity</h3>
-      <div class="activity-list">
-        <div class="activity-item">
-          <span class="activity-icon">✓</span>
-          <span>5 exams completed today</span>
-        </div>
-        <div class="activity-item">
-          <span class="activity-icon">+</span>
-          <span>3 new questions added</span>
-        </div>
-        <div class="activity-item">
-          <span class="activity-icon">★</span>
-          <span>Exam 12 had the highest average score this week</span>
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-gradient-secondary text-white">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-clock-history me-2 fs-4"></i>
+              <h5 class="mb-0">Recent Activity</h5>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="activity-item d-flex align-items-center p-3 mb-3 bg-light rounded-3">
+                  <div class="activity-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                    <i class="bi bi-check-lg"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1">Exams Completed</h6>
+                    <p class="mb-0 text-muted">5 exams completed today</p>
+                  </div>
+                  <div class="text-end">
+                    <small class="text-muted">Today</small>
+                  </div>
+                </div>
+
+                <div class="activity-item d-flex align-items-center p-3 mb-3 bg-light rounded-3">
+                  <div class="activity-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                    <i class="bi bi-plus-lg"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1">New Questions Added</h6>
+                    <p class="mb-0 text-muted">3 new questions added to question bank</p>
+                  </div>
+                  <div class="text-end">
+                    <small class="text-muted">2 hours ago</small>
+                  </div>
+                </div>
+
+                <div class="activity-item d-flex align-items-center p-3 bg-light rounded-3">
+                  <div class="activity-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                    <i class="bi bi-star-fill"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1">Top Performing Exam</h6>
+                    <p class="mb-0 text-muted">Exam 12 had the highest average score this week</p>
+                  </div>
+                  <div class="text-end">
+                    <small class="text-muted">This week</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

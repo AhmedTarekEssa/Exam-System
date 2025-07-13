@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ExamService } from '../../../core/admin-serveces/exam-service';
 import { QuestionService } from '../../../core/admin-serveces/question-service';
 import { ResultService } from '../../../core/admin-serveces/result-service';
@@ -37,7 +37,8 @@ export class DashboardContent implements OnInit {
   constructor(
     private examService: ExamService,
     private questionService: QuestionService,
-    private resultService: ResultService
+    private resultService: ResultService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +52,9 @@ export class DashboardContent implements OnInit {
     this.examService.getAllExams().subscribe({
       next: (exams) => {
         this.calculateExamAnalytics(exams);
-        this.loadQuestionData();
+        for (const exam of exams) {
+          this.loadQuestionData(exam.id);
+        }
       },
       error: (err) => {
         this.handleError('Failed to load exam data', err);
@@ -62,27 +65,26 @@ export class DashboardContent implements OnInit {
   private calculateExamAnalytics(exams: any[]): void {
     this.totalExams = exams.length;
 
-    // Calculate exams created this month
     const currentMonth = new Date().getMonth();
     this.examsThisMonth = exams.filter(exam =>
       new Date(exam.createdAt).getMonth() === currentMonth
     ).length;
 
-    // Calculate average questions
     const totalQuestions = exams.reduce((sum, exam) => sum + (exam.questions?.length || 0), 0);
     this.averageQuestionsPerExam = this.totalExams > 0
       ? Math.round(totalQuestions / this.totalExams)
       : 0;
   }
 
-  private loadQuestionData(): void {
-    this.questionService.getQuestionsByExam(0).subscribe({
-      next: (questions) => {
-        this.calculateQuestionAnalytics(questions);
-        this.loadResultData();
+  private loadQuestionData(exId: number): void {
+    this.examService.getExamById(exId).subscribe({
+      next: (exam) => {
+        this.calculateQuestionAnalytics(exam.questions || []);
+        this.loadResultData(exId);
+        this.cdr.detectChanges(); // Ensure the UI is updated
       },
       error: (err) => {
-        this.handleError('Failed to load question data', err);
+        this.handleError('Failed to load exam detail', err);
       }
     });
   }
@@ -94,11 +96,12 @@ export class DashboardContent implements OnInit {
     this.shortAnswerQuestions = questions.filter(q => q.type === 'ShortAnswer').length;
   }
 
-  private loadResultData(): void {
-    this.resultService.getResultsByExam(0).subscribe({
+  private loadResultData(exId: number): void {
+    this.resultService.getResultsByExam(exId).subscribe({
       next: (results) => {
         this.calculateResultAnalytics(results);
         this.isLoading = false;
+        this.cdr.detectChanges(); // Trigger update if needed
       },
       error: (err) => {
         this.handleError('Failed to load result data', err);
@@ -111,16 +114,13 @@ export class DashboardContent implements OnInit {
 
     this.totalAttempts = results.length;
 
-    // Calculate average score
     const totalScore = results.reduce((sum, result) => sum + result.score, 0);
     this.averageScore = Math.round(totalScore / results.length);
 
-    // Calculate completion rate
     const completedResults = results.filter(result => result.status === 'completed');
     this.completionRate = Math.round((completedResults.length / results.length) * 100);
 
-    // Find top performing exam
-    const examScores = results.reduce((acc, result) => {
+    const examScores = results.reduce((acc: any, result: any) => {
       acc[result.examId] = (acc[result.examId] || 0) + result.score;
       return acc;
     }, {});
@@ -137,6 +137,7 @@ export class DashboardContent implements OnInit {
     console.error(message, error);
     this.error = message;
     this.isLoading = false;
+    this.cdr.detectChanges(); // Reflect error in UI
   }
 
   refreshData(): void {
